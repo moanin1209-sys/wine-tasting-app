@@ -117,7 +117,7 @@ export default function Home() {
 
       <Link
         href="/wines/new"
-        className="fixed bottom-20 right-6 w-14 h-14 bg-[#0c0a0e] text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-20 radiant-fab hover:scale-110 transition-transform duration-300"
+        className="fixed bottom-24 right-4 w-14 h-14 bg-[#0c0a0e] text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-20 radiant-fab hover:scale-110 transition-transform duration-300"
       >
         +
       </Link>
