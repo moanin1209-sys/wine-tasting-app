@@ -5,10 +5,24 @@ import BottomNav from "@/components/BottomNav";
 export const metadata: Metadata = {
   title: "Wine Note",
   description: "나만의 와인 테이스팅 노트 & 셀러",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Wine Note",
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#ffffff',
+  themeColor: '#7c2d50',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
