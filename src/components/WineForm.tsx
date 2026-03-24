@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Wine, WineType } from '@/types/wine';
 import StarRating from './StarRating';
@@ -205,9 +205,10 @@ export default function WineForm({ wine, defaultValues, cellarWineId, wishlistWi
 
       <TasteProfileInput
         values={tasteProfile}
-        onChange={(field, value) =>
-          setTasteProfile((prev) => ({ ...prev, [field]: value }))
-        }
+        onChange={useCallback((field: string, value: number | null) =>
+          setTasteProfile((prev) => ({ ...prev, [field]: value })),
+          []
+        )}
       />
 
       <div>

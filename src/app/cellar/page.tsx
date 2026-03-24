@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { CellarWine, WineType } from '@/types/cellar';
 import CellarCard from '@/components/CellarCard';
@@ -40,24 +40,27 @@ export default function CellarPage() {
     }
   };
 
-  const filtered = wines
-    .filter((w) => {
-      if (typeFilter && w.type !== typeFilter) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        return (
-          w.name.toLowerCase().includes(q) ||
-          (w.grape?.toLowerCase().includes(q) ?? false) ||
-          (w.region?.toLowerCase().includes(q) ?? false)
-        );
-      }
-      return true;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'quantity') return b.quantity - a.quantity;
-      if (sortBy === 'name') return a.name.localeCompare(b.name, 'ko');
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    });
+  const filtered = useMemo(() =>
+    wines
+      .filter((w) => {
+        if (typeFilter && w.type !== typeFilter) return false;
+        if (search) {
+          const q = search.toLowerCase();
+          return (
+            w.name.toLowerCase().includes(q) ||
+            (w.grape?.toLowerCase().includes(q) ?? false) ||
+            (w.region?.toLowerCase().includes(q) ?? false)
+          );
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'quantity') return b.quantity - a.quantity;
+        if (sortBy === 'name') return a.name.localeCompare(b.name, 'ko');
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }),
+    [wines, typeFilter, search, sortBy]
+  );
 
   return (
     <>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Wine, WineType } from '@/types/wine';
 import WineCard from '@/components/WineCard';
@@ -32,24 +32,27 @@ export default function Home() {
     }
   };
 
-  const filtered = wines
-    .filter((w) => {
-      if (typeFilter && w.type !== typeFilter) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        return (
-          w.name.toLowerCase().includes(q) ||
-          (w.grape?.toLowerCase().includes(q) ?? false) ||
-          (w.region?.toLowerCase().includes(q) ?? false)
-        );
-      }
-      return true;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'rating') return b.rating - a.rating;
-      if (sortBy === 'name') return a.name.localeCompare(b.name, 'ko');
-      return new Date(b.tasting_date).getTime() - new Date(a.tasting_date).getTime();
-    });
+  const filtered = useMemo(() =>
+    wines
+      .filter((w) => {
+        if (typeFilter && w.type !== typeFilter) return false;
+        if (search) {
+          const q = search.toLowerCase();
+          return (
+            w.name.toLowerCase().includes(q) ||
+            (w.grape?.toLowerCase().includes(q) ?? false) ||
+            (w.region?.toLowerCase().includes(q) ?? false)
+          );
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'rating') return b.rating - a.rating;
+        if (sortBy === 'name') return a.name.localeCompare(b.name, 'ko');
+        return new Date(b.tasting_date).getTime() - new Date(a.tasting_date).getTime();
+      }),
+    [wines, typeFilter, search, sortBy]
+  );
 
   return (
     <>

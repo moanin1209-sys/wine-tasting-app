@@ -1,26 +1,22 @@
-'use client';
-
 import Link from 'next/link';
+import Image from 'next/image';
+import { memo } from 'react';
 import { WishlistWine } from '@/types/wishlist';
 
-interface WishlistCardProps {
-  wine: WishlistWine;
-}
-
-export default function WishlistCard({ wine }: WishlistCardProps) {
+function WishlistCardInner({ wine }: { wine: WishlistWine }) {
   const typeBadgeClass = wine.type ? `type-badge-${wine.type}` : '';
 
   return (
     <Link href={`/wishlist/${wine.id}`} className="block card group">
       <div className="card-inner">
         {wine.image_url ? (
-          <div className="h-40 overflow-hidden">
-            <img
+          <div className="h-40 overflow-hidden relative">
+            <Image
               src={wine.image_url}
               alt={wine.name}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              fill
+              sizes="(max-width: 640px) 50vw, 300px"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
             />
           </div>
@@ -56,3 +52,5 @@ export default function WishlistCard({ wine }: WishlistCardProps) {
     </Link>
   );
 }
+
+export default memo(WishlistCardInner);

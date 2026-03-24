@@ -22,8 +22,8 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
 
     try {
       const compressed = await imageCompression(file, {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1200,
+        maxSizeMB: 0.2,
+        maxWidthOrHeight: 800,
         useWebWorker: true,
       });
 

@@ -1,21 +1,23 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { memo } from 'react';
 import { Wine } from '@/types/wine';
 import StarRating from './StarRating';
 
-export default function WineCard({ wine }: { wine: Wine }) {
+function WineCardInner({ wine }: { wine: Wine }) {
   const typeBadgeClass = wine.type ? `type-badge-${wine.type}` : 'type-badge-기타';
 
   return (
     <Link href={`/wines/${wine.id}`} className="block card group">
       <div className="card-inner">
         {wine.image_url ? (
-          <div className="h-40 overflow-hidden">
-            <img
+          <div className="h-40 overflow-hidden relative">
+            <Image
               src={wine.image_url}
               alt={wine.name}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              fill
+              sizes="(max-width: 640px) 50vw, 300px"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
             />
           </div>
@@ -45,3 +47,5 @@ export default function WineCard({ wine }: { wine: Wine }) {
     </Link>
   );
 }
+
+export default memo(WineCardInner);

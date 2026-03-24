@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Wine } from '@/types/wine';
 import { CellarWine } from '@/types/cellar';
 import RadarChart from '@/components/RadarChart';
@@ -165,6 +165,11 @@ export default function StatsPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const stats = useMemo(() => computeStats(wines, cellar), [wines, cellar]);
+  const maxRating = useMemo(() => Math.max(...stats.ratingDist, 1), [stats.ratingDist]);
+  const maxMonthly = useMemo(() => Math.max(...stats.monthlySpending.map(m => m.amount), 1), [stats.monthlySpending]);
+  const maxMonthlyCount = useMemo(() => Math.max(...stats.monthlyCount.map(m => m.count), 1), [stats.monthlyCount]);
+
   if (loading) {
     return (
       <div className="pt-6 space-y-4">
@@ -176,11 +181,6 @@ export default function StatsPage() {
       </div>
     );
   }
-
-  const stats = computeStats(wines, cellar);
-  const maxRating = Math.max(...stats.ratingDist, 1);
-  const maxMonthly = Math.max(...stats.monthlySpending.map(m => m.amount), 1);
-  const maxMonthlyCount = Math.max(...stats.monthlyCount.map(m => m.count), 1);
 
   return (
     <div className="pt-6 pb-4">
