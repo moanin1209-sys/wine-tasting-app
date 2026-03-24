@@ -166,7 +166,7 @@ export default function ShareCard({ wine, onClose }: ShareCardProps) {
         </div>
         <button
           onClick={onClose}
-          className="w-full mt-2 py-2 text-sm text-white/40 hover:text-white/60 transition-colors"
+          className="w-full mt-2 py-2 text-sm text-white/60 hover:text-white/80 transition-colors"
         >
           닫기
         </button>

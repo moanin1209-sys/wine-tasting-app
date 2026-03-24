@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Wine, WineType } from '@/types/wine';
 import StarRating from './StarRating';
 import ImageUpload from './ImageUpload';
+import TasteProfileInput from './TasteProfileInput';
 
 const WINE_TYPES: WineType[] = ['레드', '화이트', '로제', '스파클링', '기타'];
 
@@ -22,9 +23,10 @@ interface WineFormProps {
   wine?: Wine;
   defaultValues?: WineFormDefaultValues;
   cellarWineId?: string | null;
+  wishlistWineId?: string | null;
 }
 
-export default function WineForm({ wine, defaultValues, cellarWineId }: WineFormProps) {
+export default function WineForm({ wine, defaultValues, cellarWineId, wishlistWineId }: WineFormProps) {
   const router = useRouter();
   const isEdit = !!wine;
 
@@ -40,6 +42,13 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
   );
   const [memo, setMemo] = useState(wine?.memo ?? '');
   const [imageUrl, setImageUrl] = useState<string | null>(wine?.image_url ?? defaultValues?.image_url ?? null);
+  const [tasteProfile, setTasteProfile] = useState({
+    body: wine?.body ?? null as number | null,
+    tannin: wine?.tannin ?? null as number | null,
+    acidity: wine?.acidity ?? null as number | null,
+    sweetness: wine?.sweetness ?? null as number | null,
+    aroma: wine?.aroma ?? null as number | null,
+  });
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -70,6 +79,11 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
         memo: memo.trim() || null,
         image_url: imageUrl,
         cellar_wine_id: cellarWineId || null,
+        body: tasteProfile.body,
+        tannin: tasteProfile.tannin,
+        acidity: tasteProfile.acidity,
+        sweetness: tasteProfile.sweetness,
+        aroma: tasteProfile.aroma,
       };
 
       const url = isEdit ? `/api/wines/${wine.id}` : '/api/wines';
@@ -82,6 +96,11 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
       });
 
       if (!res.ok) throw new Error('저장 실패');
+
+      // Delete wishlist item after successfully creating tasting note
+      if (wishlistWineId) {
+        await fetch(`/api/wishlist/${wishlistWineId}`, { method: 'DELETE' }).catch(() => {});
+      }
 
       router.push(cellarWineId ? `/cellar/${cellarWineId}` : '/');
       router.refresh();
@@ -97,8 +116,8 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
       <ImageUpload value={imageUrl} onChange={setImageUrl} />
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">
-          와인명 <span className="text-[#e57373]">*</span>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">
+          와인명 <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -107,11 +126,11 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
           placeholder="예: 샤또 마고 2015"
           className="w-full glass-input rounded-xl px-3 py-2.5"
         />
-        {errors.name && <p className="text-[#e57373] text-xs mt-1">{errors.name}</p>}
+        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">타입</label>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">타입</label>
         <div className="flex flex-wrap gap-2">
           {WINE_TYPES.map((t) => (
             <button
@@ -130,7 +149,7 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-white/60 mb-1">빈티지</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-1">빈티지</label>
           <input
             type="number"
             value={vintage}
@@ -142,7 +161,7 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-white/60 mb-1">가격 (원)</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-1">가격 (원)</label>
           <input
             type="number"
             value={price}
@@ -155,7 +174,7 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">품종</label>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">품종</label>
         <input
           type="text"
           value={grape}
@@ -166,7 +185,7 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">산지</label>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">산지</label>
         <input
           type="text"
           value={region}
@@ -177,16 +196,23 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">
-          별점 <span className="text-[#e57373]">*</span>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">
+          별점 <span className="text-red-500">*</span>
         </label>
         <StarRating value={rating} onChange={setRating} size="lg" />
-        {errors.rating && <p className="text-[#e57373] text-xs mt-1">{errors.rating}</p>}
+        {errors.rating && <p className="text-red-500 text-xs mt-1">{errors.rating}</p>}
       </div>
 
+      <TasteProfileInput
+        values={tasteProfile}
+        onChange={(field, value) =>
+          setTasteProfile((prev) => ({ ...prev, [field]: value }))
+        }
+      />
+
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">
-          시음 날짜 <span className="text-[#e57373]">*</span>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">
+          시음 날짜 <span className="text-red-500">*</span>
         </label>
         <input
           type="date"
@@ -194,11 +220,11 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
           onChange={(e) => setTastingDate(e.target.value)}
           className="w-full glass-input rounded-xl px-3 py-2.5"
         />
-        {errors.tastingDate && <p className="text-[#e57373] text-xs mt-1">{errors.tastingDate}</p>}
+        {errors.tastingDate && <p className="text-red-500 text-xs mt-1">{errors.tastingDate}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">메모</label>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">메모</label>
         <textarea
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
@@ -212,14 +238,14 @@ export default function WineForm({ wine, defaultValues, cellarWineId }: WineForm
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 btn-primary py-3 rounded-xl font-medium"
+          className="flex-1 btn-primary py-3.5 rounded-full font-medium"
         >
           {saving ? '저장 중...' : isEdit ? '수정하기' : '저장하기'}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-3 btn-secondary rounded-xl font-medium"
+          className="px-6 py-3.5 btn-secondary rounded-full font-medium"
         >
           취소
         </button>

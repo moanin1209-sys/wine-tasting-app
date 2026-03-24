@@ -61,10 +61,8 @@ export default function CellarPage() {
 
   return (
     <>
-      <header className="sticky top-0 pt-6 pb-3 z-10" style={{ background: 'rgba(12, 10, 14, 0.8)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
-        <h1 className="text-2xl font-bold text-white mb-4 tracking-tight">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f5f0eb] to-[#b4824a]">셀러</span>
-        </h1>
+      <header className="sticky top-0 pt-8 pb-3 z-10" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
+        <h1 className="text-2xl font-bold mb-4 tracking-tight">셀러</h1>
         <SearchBar value={search} onChange={setSearch} />
         <div className="mt-3 space-y-3">
           <div className="flex flex-wrap gap-2">
@@ -121,10 +119,10 @@ export default function CellarPage() {
           </div>
         ) : error ? (
           <div className="text-center py-12">
-            <p className="text-white/50 mb-3">{error}</p>
+            <p className="text-[--text-muted] mb-3">{error}</p>
             <button
               onClick={() => { setError(null); setLoading(true); fetchWines(); }}
-              className="text-[#f9a8d4] font-medium hover:underline"
+              className="text-[--accent] font-medium hover:underline"
             >
               다시 시도
             </button>
@@ -132,13 +130,13 @@ export default function CellarPage() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-5xl mb-4">📦</p>
-            <p className="text-white/50 mb-1">
-              {wines.length === 0 ? '셀러에 등록된 와인이 없습니다' : '검색 결과가 없습니다'}
+            <p className="text-[--text-muted] mb-1">
+              {wines.length === 0 ? '셀러가 당신의 첫 와인을 기다리고 있습니다 📦' : '그런 와인은 아직 만나지 못했네요 🔍'}
             </p>
             {wines.length === 0 && (
               <Link
                 href="/cellar/new"
-                className="inline-block mt-3 text-[#f9a8d4] font-medium hover:underline"
+                className="inline-block mt-3 text-[--accent] font-medium hover:underline"
               >
                 첫 와인을 등록해보세요
               </Link>
@@ -155,7 +153,7 @@ export default function CellarPage() {
 
       <Link
         href="/cellar/new"
-        className="fixed bottom-24 right-4 w-14 h-14 bg-[#0c0a0e] text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-20 radiant-fab hover:scale-110 transition-transform duration-300"
+        className="fixed bottom-24 right-4 w-14 h-14 text-white rounded-full flex items-center justify-center text-2xl z-20 radiant-fab"
       >
         +
       </Link>

@@ -83,8 +83,8 @@ export default function CellarForm({ wine }: CellarFormProps) {
       <ImageUpload value={imageUrl} onChange={setImageUrl} />
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">
-          와인명 <span className="text-[#e57373]">*</span>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">
+          와인명 <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -93,11 +93,11 @@ export default function CellarForm({ wine }: CellarFormProps) {
           placeholder="예: 샤또 마고 2015"
           className="w-full glass-input rounded-xl px-3 py-2.5"
         />
-        {errors.name && <p className="text-[#e57373] text-xs mt-1">{errors.name}</p>}
+        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">타입</label>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">타입</label>
         <div className="flex flex-wrap gap-2">
           {WINE_TYPES.map((t) => (
             <button
@@ -116,7 +116,7 @@ export default function CellarForm({ wine }: CellarFormProps) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-white/60 mb-1">빈티지</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-1">빈티지</label>
           <input
             type="number"
             value={vintage}
@@ -128,8 +128,8 @@ export default function CellarForm({ wine }: CellarFormProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-white/60 mb-1">
-            수량 <span className="text-[#e57373]">*</span>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-1">
+            수량 <span className="text-red-500">*</span>
           </label>
           <input
             type="number"
@@ -138,13 +138,13 @@ export default function CellarForm({ wine }: CellarFormProps) {
             min="0"
             className="w-full glass-input rounded-xl px-3 py-2.5"
           />
-          {errors.quantity && <p className="text-[#e57373] text-xs mt-1">{errors.quantity}</p>}
+          {errors.quantity && <p className="text-red-500 text-xs mt-1">{errors.quantity}</p>}
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-white/60 mb-1">품종</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-1">품종</label>
           <input
             type="text"
             value={grape}
@@ -154,7 +154,7 @@ export default function CellarForm({ wine }: CellarFormProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-white/60 mb-1">산지</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-1">산지</label>
           <input
             type="text"
             value={region}
@@ -167,7 +167,7 @@ export default function CellarForm({ wine }: CellarFormProps) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-white/60 mb-1">가격 (원)</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-1">가격 (원)</label>
           <input
             type="number"
             value={price}
@@ -178,7 +178,7 @@ export default function CellarForm({ wine }: CellarFormProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-white/60 mb-1">구매일</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-1">구매일</label>
           <input
             type="date"
             value={purchaseDate}
@@ -189,7 +189,7 @@ export default function CellarForm({ wine }: CellarFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">구매처</label>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">구매처</label>
         <input
           type="text"
           value={purchaseFrom}
@@ -200,7 +200,7 @@ export default function CellarForm({ wine }: CellarFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/60 mb-1">메모</label>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-1">메모</label>
         <textarea
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
@@ -214,14 +214,14 @@ export default function CellarForm({ wine }: CellarFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 btn-primary py-3 rounded-xl font-medium"
+          className="flex-1 btn-primary py-3.5 rounded-full font-medium"
         >
           {saving ? '저장 중...' : isEdit ? '수정하기' : '저장하기'}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-3 btn-secondary rounded-xl font-medium"
+          className="px-6 py-3.5 btn-secondary rounded-full font-medium"
         >
           취소
         </button>

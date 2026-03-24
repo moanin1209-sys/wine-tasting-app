@@ -3,21 +3,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Wine } from '@/types/wine';
-import StarRating from '@/components/StarRating';
-import ShareCard from '@/components/ShareCard';
-import RadarChart from '@/components/RadarChart';
+import { WishlistWine } from '@/types/wishlist';
 
-export default function WineDetailPage() {
+export default function WishlistDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const [wine, setWine] = useState<Wine | null>(null);
+  const [wine, setWine] = useState<WishlistWine | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
-  const [showShare, setShowShare] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/wines/${id}`)
+    fetch(`/api/wishlist/${id}`)
       .then((res) => res.json())
       .then(setWine)
       .catch(() => setWine(null))
@@ -28,13 +24,18 @@ export default function WineDetailPage() {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     setDeleting(true);
     try {
-      await fetch(`/api/wines/${id}`, { method: 'DELETE' });
-      router.push('/');
+      await fetch(`/api/wishlist/${id}`, { method: 'DELETE' });
+      router.push('/wishlist');
       router.refresh();
     } catch {
       alert('삭제에 실패했습니다.');
       setDeleting(false);
     }
+  };
+
+  const handleTriedIt = () => {
+    // Navigate to new tasting note with wishlist data pre-filled
+    router.push(`/wines/new?from_wishlist=${id}`);
   };
 
   if (loading) {
@@ -53,49 +54,34 @@ export default function WineDetailPage() {
     return (
       <div className="pt-6 text-center py-16">
         <p className="text-[--text-muted]">와인을 찾을 수 없습니다</p>
-        <Link href="/" className="text-[--accent] mt-2 inline-block hover:underline">
-          목록으로 돌아가기
+        <Link href="/wishlist" className="text-[--accent] mt-2 inline-block hover:underline">
+          위시리스트로 돌아가기
         </Link>
       </div>
     );
   }
 
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat('ko-KR').format(price) + '원';
-
   const typeBadgeClass = wine.type ? `type-badge-${wine.type}` : '';
 
   return (
     <div className="pt-6">
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={() => router.back()}
-          className="text-[--text-muted] text-sm hover:text-[--text-secondary] transition-colors"
-        >
-          ← 뒤로
-        </button>
-        <button
-          onClick={() => setShowShare(true)}
-          className="text-sm px-3 py-1.5 rounded-full bg-[--surface-secondary] text-[--text-muted] hover:bg-[--surface-secondary] hover:text-[--text-secondary] transition-all border border-[--border]"
-        >
-          📤 공유
-        </button>
-      </div>
+      <button
+        onClick={() => router.back()}
+        className="text-[--text-muted] text-sm hover:text-[--text-secondary] transition-colors mb-4"
+      >
+        ← 뒤로
+      </button>
 
       {wine.image_url ? (
         <div className="card">
           <div className="card-inner">
-            <img
-              src={wine.image_url}
-              alt={wine.name}
-              className="w-full h-64 object-cover"
-            />
+            <img src={wine.image_url} alt={wine.name} className="w-full h-64 object-cover" />
           </div>
         </div>
       ) : (
         <div className="card">
           <div className="card-inner w-full h-64 flex items-center justify-center text-6xl">
-            🍷
+            💭
           </div>
         </div>
       )}
@@ -109,21 +95,28 @@ export default function WineDetailPage() {
                 {wine.type}
               </span>
             )}
-            {wine.vintage && (
-              <span className="text-sm text-[--text-muted]">{wine.vintage}</span>
-            )}
+            {/* Priority dots */}
+            <div className="flex gap-1 items-center">
+              {[1, 2, 3, 4, 5].map((p) => (
+                <div
+                  key={p}
+                  className={`w-2 h-2 rounded-full ${
+                    p <= wine.priority ? 'bg-[--accent]' : 'bg-[--surface-secondary]'
+                  }`}
+                />
+              ))}
+              <span className="text-xs text-[--text-muted] ml-1">우선순위</span>
+            </div>
           </div>
         </div>
 
-        <StarRating value={wine.rating} readonly size="md" />
-
-        <RadarChart
-          body={wine.body}
-          tannin={wine.tannin}
-          acidity={wine.acidity}
-          sweetness={wine.sweetness}
-          aroma={wine.aroma}
-        />
+        {/* "마셔봤어요" button */}
+        <button
+          onClick={handleTriedIt}
+          className="w-full py-3.5 rounded-full btn-primary font-medium text-center"
+        >
+          🍷 마셔봤어요!
+        </button>
 
         <div className="glass-card rounded-xl p-4 grid grid-cols-2 gap-3 text-sm">
           {wine.grape && (
@@ -138,30 +131,26 @@ export default function WineDetailPage() {
               <p className="text-[--text-secondary]">{wine.region}</p>
             </div>
           )}
-          {wine.price && (
+          {wine.price_range && (
             <div>
-              <p className="text-[--text-muted]">가격</p>
-              <p className="text-[--text-secondary]">{formatPrice(wine.price)}</p>
+              <p className="text-[--text-muted]">가격대</p>
+              <p className="text-[--text-secondary]">{wine.price_range}</p>
             </div>
           )}
-          <div>
-            <p className="text-[--text-muted]">시음 날짜</p>
-            <p className="text-[--text-secondary]">{wine.tasting_date}</p>
-          </div>
         </div>
 
-        {wine.memo && (
+        {wine.reason && (
           <div className="glass-card rounded-xl p-4">
-            <p className="text-[--text-muted] text-sm mb-1">메모</p>
+            <p className="text-[--text-muted] text-sm mb-1">마시고 싶은 이유</p>
             <p className="text-[--text-secondary] whitespace-pre-wrap leading-relaxed">
-              {wine.memo}
+              {wine.reason}
             </p>
           </div>
         )}
 
         <div className="flex gap-3 pt-4">
           <Link
-            href={`/wines/${wine.id}/edit`}
+            href={`/wishlist/${wine.id}/edit`}
             className="flex-1 text-center py-3 btn-primary rounded-full font-medium"
           >
             수정
@@ -175,9 +164,6 @@ export default function WineDetailPage() {
           </button>
         </div>
       </div>
-
-      {/* Share Card Modal */}
-      {showShare && <ShareCard wine={wine} onClose={() => setShowShare(false)} />}
     </div>
   );
 }

@@ -5,12 +5,15 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import WineForm from '@/components/WineForm';
 import { CellarWine } from '@/types/cellar';
+import { WishlistWine } from '@/types/wishlist';
 
 function NewWineContent() {
   const searchParams = useSearchParams();
   const fromCellar = searchParams.get('from_cellar');
+  const fromWishlist = searchParams.get('from_wishlist');
   const [cellarWine, setCellarWine] = useState<CellarWine | null>(null);
-  const [loading, setLoading] = useState(!!fromCellar);
+  const [wishlistWine, setWishlistWine] = useState<WishlistWine | null>(null);
+  const [loading, setLoading] = useState(!!fromCellar || !!fromWishlist);
 
   useEffect(() => {
     if (fromCellar) {
@@ -19,8 +22,14 @@ function NewWineContent() {
         .then(setCellarWine)
         .catch(() => setCellarWine(null))
         .finally(() => setLoading(false));
+    } else if (fromWishlist) {
+      fetch(`/api/wishlist/${fromWishlist}`)
+        .then((r) => r.json())
+        .then(setWishlistWine)
+        .catch(() => setWishlistWine(null))
+        .finally(() => setLoading(false));
     }
-  }, [fromCellar]);
+  }, [fromCellar, fromWishlist]);
 
   if (loading) {
     return (
@@ -41,14 +50,30 @@ function NewWineContent() {
         price: cellarWine.price,
         image_url: cellarWine.image_url,
       }
+    : wishlistWine
+    ? {
+        name: wishlistWine.name,
+        type: wishlistWine.type,
+        grape: wishlistWine.grape,
+        region: wishlistWine.region,
+        image_url: wishlistWine.image_url,
+      }
     : undefined;
+
+  const title = cellarWine
+    ? `🍷 ${cellarWine.name} 테이스팅`
+    : wishlistWine
+    ? `🍷 ${wishlistWine.name} 테이스팅`
+    : '새 와인 기록';
 
   return (
     <div className="pt-6">
-      <h1 className="text-xl font-bold text-white mb-6">
-        {cellarWine ? `🍷 ${cellarWine.name} 테이스팅` : '새 와인 기록'}
-      </h1>
-      <WineForm defaultValues={defaultValues} cellarWineId={fromCellar} />
+      <h1 className="text-xl font-bold mb-6">{title}</h1>
+      <WineForm
+        defaultValues={defaultValues}
+        cellarWineId={fromCellar}
+        wishlistWineId={fromWishlist}
+      />
     </div>
   );
 }

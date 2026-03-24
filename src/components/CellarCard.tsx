@@ -8,41 +8,46 @@ export default function CellarCard({ wine }: { wine: CellarWine }) {
   return (
     <Link
       href={`/cellar/${wine.id}`}
-      className={`block glass-card rounded-2xl overflow-hidden group ${
-        isDepleted ? 'opacity-40' : ''
-      }`}
+      className={`block card group ${isDepleted ? 'opacity-40' : ''}`}
     >
-      {wine.image_url ? (
-        <img
-          src={wine.image_url}
-          alt={wine.name}
-          className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-      ) : (
-        <div className="w-full h-40 bg-white/[0.03] flex items-center justify-center text-4xl">
-          🍷
-        </div>
-      )}
-      <div className="p-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-white truncate flex-1">{wine.name}</h3>
-          <span className={`text-xs font-bold ml-2 px-2 py-0.5 rounded-full ${
-            isDepleted
-              ? 'bg-white/10 text-white/40'
-              : 'bg-[#8b2252]/20 text-[#f9a8d4]'
-          }`}>
-            {isDepleted ? '소진' : `×${wine.quantity}`}
-          </span>
-        </div>
-        <div className="flex items-center gap-2 mt-1">
-          {wine.type && (
-            <span className={`text-xs px-2 py-0.5 rounded-full ${typeBadgeClass}`}>
-              {wine.type}
+      <div className="card-inner">
+        {wine.image_url ? (
+          <div className="h-40 overflow-hidden">
+            <img
+              src={wine.image_url}
+              alt={wine.name}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
+            />
+          </div>
+        ) : (
+          <div className="w-full h-40 bg-[--surface-secondary] flex items-center justify-center text-4xl">
+            🍷
+          </div>
+        )}
+        <div className="p-3.5">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-[--text-primary] truncate flex-1 text-[15px] leading-snug">{wine.name}</h3>
+            <span className={`text-[11px] font-bold ml-2 px-2.5 py-1 rounded-full ${
+              isDepleted
+                ? 'bg-[--surface-secondary] text-[--text-muted]'
+                : 'bg-[--accent-bg] text-[--accent]'
+            }`}>
+              {isDepleted ? '소진' : `×${wine.quantity}`}
             </span>
-          )}
-          {wine.vintage && (
-            <span className="text-xs text-white/40">{wine.vintage}</span>
-          )}
+          </div>
+          <div className="flex items-center gap-2 mt-1.5">
+            {wine.type && (
+              <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${typeBadgeClass}`}>
+                {wine.type}
+              </span>
+            )}
+            {wine.vintage && (
+              <span className="text-[11px] text-[--text-muted]">{wine.vintage}</span>
+            )}
+          </div>
         </div>
       </div>
     </Link>

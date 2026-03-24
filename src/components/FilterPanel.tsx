@@ -3,19 +3,20 @@
 import { WineType } from '@/types/wine';
 
 const WINE_TYPES: WineType[] = ['레드', '화이트', '로제', '스파클링', '기타'];
-const SORT_OPTIONS = [
+const DEFAULT_SORT_OPTIONS = [
   { value: 'latest', label: '최신순' },
   { value: 'rating', label: '점수순' },
   { value: 'name', label: '이름순' },
 ] as const;
 
-export type SortOption = (typeof SORT_OPTIONS)[number]['value'];
+export type SortOption = string;
 
 interface FilterPanelProps {
   selectedType: WineType | null;
   onTypeChange: (type: WineType | null) => void;
   sortBy: SortOption;
   onSortChange: (sort: SortOption) => void;
+  sortOptions?: { value: string; label: string }[];
 }
 
 export default function FilterPanel({
@@ -23,7 +24,9 @@ export default function FilterPanel({
   onTypeChange,
   sortBy,
   onSortChange,
+  sortOptions,
 }: FilterPanelProps) {
+  const sorts = sortOptions ?? DEFAULT_SORT_OPTIONS;
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
@@ -48,13 +51,13 @@ export default function FilterPanel({
         ))}
       </div>
       <div className="flex gap-2">
-        {SORT_OPTIONS.map((opt) => (
+        {sorts.map((opt) => (
           <button
             key={opt.value}
             onClick={() => onSortChange(opt.value)}
             className={`text-xs px-2.5 py-1 rounded pill ${
               sortBy === opt.value
-                ? 'bg-white/15 text-white border border-white/20'
+                ? 'bg-[--surface-secondary] text-[--text-primary] border border-[--border]'
                 : 'pill-inactive'
             }`}
           >

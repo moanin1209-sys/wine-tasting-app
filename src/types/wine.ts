@@ -13,6 +13,11 @@ export interface Wine {
   image_url: string | null;
   tasting_date: string;
   cellar_wine_id: string | null;
+  body: number | null;
+  tannin: number | null;
+  acidity: number | null;
+  sweetness: number | null;
+  aroma: number | null;
   created_at: string;
   updated_at: string;
 }

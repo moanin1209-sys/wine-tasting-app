@@ -28,10 +28,11 @@ export default function StarRating({
           disabled={readonly}
           onClick={() => onChange?.(star)}
           className={`${sizeClass} ${
-            readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110'
-          } transition-transform ${
-            star <= value ? 'text-amber-400' : 'text-white/20'
+            readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110 active:scale-95'
+          } transition-transform duration-300 ${
+            star <= value ? 'text-amber-400' : 'text-[--border]'
           }`}
+          style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
         >
           ★
         </button>

@@ -60,17 +60,18 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
           <img
             src={preview}
             alt="와인 사진"
-            className="w-full h-48 object-cover rounded-2xl border border-white/[0.08]"
+            className="w-full h-48 object-cover rounded-2xl border border-[var(--border)]"
           />
           {uploading && (
-            <div className="absolute inset-0 bg-black/60 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-              <span className="text-white/80 text-sm">업로드 중...</span>
+            <div className="absolute inset-0 bg-black/70 rounded-2xl flex items-center justify-center">
+              <span className="text-white/70 text-sm">업로드 중...</span>
             </div>
           )}
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute top-2 right-2 bg-black/60 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm hover:bg-black/80 backdrop-blur-sm transition-colors"
+            className="absolute top-2.5 right-2.5 bg-black/60 text-white/70 rounded-full w-7 h-7 flex items-center justify-center text-sm hover:bg-black/80 transition-colors duration-300"
+            style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
           >
             ✕
           </button>
@@ -79,7 +80,8 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="w-full h-48 border border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center text-white/30 hover:border-white/40 hover:text-white/50 hover:bg-white/[0.03] transition-all duration-300"
+          className="w-full h-48 border border-dashed border-[--border] rounded-2xl flex flex-col items-center justify-center text-[--text-placeholder] hover:border-[--text-muted] hover:text-[--text-muted] hover:bg-[--surface-secondary] transition-all duration-500"
+          style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
         >
           <span className="text-3xl mb-2">📷</span>
           <span className="text-sm">사진 추가</span>

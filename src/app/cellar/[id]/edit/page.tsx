@@ -32,8 +32,8 @@ export default function EditCellarPage() {
   if (!wine) {
     return (
       <div className="pt-6 text-center py-16">
-        <p className="text-white/50">와인을 찾을 수 없습니다</p>
-        <Link href="/cellar" className="text-[#f9a8d4] mt-2 inline-block hover:underline">
+        <p className="text-[--text-muted]">와인을 찾을 수 없습니다</p>
+        <Link href="/cellar" className="text-[--accent] mt-2 inline-block hover:underline">
           셀러로 돌아가기
         </Link>
       </div>
@@ -42,7 +42,7 @@ export default function EditCellarPage() {
 
   return (
     <div className="pt-6">
-      <h1 className="text-xl font-bold text-white mb-6">셀러 와인 수정</h1>
+      <h1 className="text-xl font-bold mb-6">셀러 와인 수정</h1>
       <CellarForm wine={wine} />
     </div>
   );
