@@ -32,7 +32,7 @@ export default function ConfirmModal({
         <div className="flex gap-3 pt-2">
           <button
             onClick={onConfirm}
-            className="flex-1 py-3 rounded-xl font-medium text-white bg-[--accent] hover:bg-[--accent-light] transition-colors text-sm"
+            className="flex-1 py-3 rounded-xl font-medium text-white bg-[var(--accent)] hover:bg-[var(--accent-light)] transition-colors text-sm"
           >
             {confirmText}
           </button>

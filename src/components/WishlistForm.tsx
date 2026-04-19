@@ -159,7 +159,7 @@ export default function WishlistForm({ wishlistWine }: WishlistFormProps) {
               onClick={() => setPriority(p)}
               className={`flex-1 h-10 rounded-lg text-sm font-medium transition-all ${
                 priority === p
-                  ? 'bg-[--accent] text-white'
+                  ? 'bg-[var(--accent)] text-white'
                   : 'bg-[--surface-secondary] text-[--text-muted] hover:bg-[--surface-secondary]'
               }`}
             >
